@@ -1,0 +1,17 @@
+LIBRARY "MT4-FST Library"
+
+EXPORTS FST_LibraryVersion
+        FST_OpenConnection
+        FST_CloseConnection
+        FST_Request
+        FST_Response
+        FST_Ping
+        FST_Tick
+        FST_AccountInfo
+        FST_SymbolInfo
+        FST_MarketInfo
+        FST_MarketInfoAll
+        FST_TerminalInfo
+        FST_Bars
+        FST_Orders
+        FST_OrderInfo

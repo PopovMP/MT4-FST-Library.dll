@@ -1,0 +1,61 @@
+MT4-FST Library Source Code License Agreement
+
+1. Terms
+
+In this License Agreement the following words and phrases shall, unless the context otherwise requires, have the following meanings:
+
+1.1. Software - MT4-FST Library.
+1.2. Source Code - the source code of MT4-FST Library.
+1.2. Owner - Miroslav Petrov Popov, 4 Peter Raichev str., 9010 Varna, Bulgaria.
+1.3. Contact Information - Miroslav Petrov Popov, email info@forexsb.com.
+1.4. Licensee - a person or company that has been granted this License Agreement.
+1.5. Contribute - an act of changing, improving or expanding the Source Code and sending to Owner.
+1.6. Contribution - the part of code you have written and sent to the Owner.
+1.7. Contributor - a person or company who makes Contributions.
+
+2. Introduction
+
+2.1. You accept this license agreement when using the Source Code.
+2.2. If you do not accept this license agreement you cannot use the Source Code.
+2.3. This License Agreement is your proof of license to exercise the rights granted herein and must be retained by you.
+2.4. The owner of the intellectual rights of the the Source Code and the Software is the Owner.
+
+3. Rights
+
+3.1. A Licensee can download the Source Code free of charge from a place specified by the Owner.
+3.2. A Licensee can use the Source Code for better understanding of how the Software works.
+3.3. A Licensee can change the Source Code in order to improve it, fix bugs or add new features.
+3.4. A Licensee can compile the Source Code for testing, debugging and for his private use.
+3.5. A Licensee can only upload Contributions to the MT4-FST Library website - http://forexsb.com or to other place specified by the Owner.
+3.6. The Owner may or may not include Contributions in the Software releases.
+3.7. If Contributions are accepted, the Contributor will be duly noted as a Contributor on a proper place in the website of MT4-FST Library and / or in the Software itself.
+
+4. Restrictions
+
+4.1. The Contributor Contributes to the Software free of charge.
+4.2. The Contributor cannot use any part of the Source Code in other applications without explicit permission from the Owner.
+4.3. By sending Contributions to the Owner a Contributor transfers all rights in the Contribution including, without limitation, all intellectual property rights in the work to the Owner. The Owner becomes the sole and absolute owner of all rights on the Contribution.
+4.4. The Contributor may not withdraw its work from the Owner after sending a Contribution.
+4.5. The Owner can distribute Contributions as a part of the Software free of charge or commercially in any form.
+4.6. The Source Code cannot be used for making forks of the Software.
+
+5. The Contributor warrants to the Owner that
+
+5.1 The Contribution is the Contributor's original work and has not been copied in whole or in any part from any other work or material.
+5.2 The Contribution will not infringe the rights of any third party.
+5.3 No other person or entity was involved with the Contributor in the creation of the Contribution.
+5.4 The Contributor has not granted any rights of any nature in the Work to any third party whatsoever in any part of the world.
+5.5 The Contributor is entitled to transfer, assign and otherwise deal with the Intellectual Property Rights, and all other rights of ownership, in the Contribution without the consent, permission or involvement of any other person or entity.
+5.6 The Contribution contains nothing that is libelous, defamatory or indecent or which infringes the statutory or common law rights of any third party.
+5.7 The Contribution will be free from viruses and any other components with harmful or contaminating effects.
+
+6. NO WARRANTY
+
+ANY USE BY LICENSEE IS AT THE LICENSEE'S OWN RISK. 
+THE SOURCE CODE IS PROVIDED FOR USE "AS IS" WITHOUT WARRANTY OF ANY KIND.
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE OWNER DISCLAIMS ALL WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+
+7. NO LIABILITY FOR CONSEQUENTIAL DAMAGES
+
+In no event shall the Owner be liable for any damages whatsoever (including, without limitation, incidental, direct, indirect and consequential damages, damages for loss of business profits, business interruption, loss of business information, or other pecuniary loss) arising out of the use or inability to use the Source Code ore the Software, even if advised of the possibility of such damages. Because some states/countries do not allow the exclusion or limitation of liability for consequential or incidental damages, the above limitation may not apply to you.
+
