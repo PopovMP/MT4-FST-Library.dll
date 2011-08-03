@@ -461,7 +461,7 @@ MTFST_API void __stdcall FST_MarketInfoAll(int id, double point, double digits, 
 // Account Info
 MTFST_API void __stdcall FST_AccountInfo(int id, char *name, int number, char *company, char *dserver, char *currency, int leverage, double balance,
                                          double equity, double profit, double credit, double margin, double freemarginmode, double freemargin,
-                                         int stopoutmode, int stopout)
+                                         int stopoutmode, int stopout, int isdemo)
 {
     if (servers.find(id) == servers.end())
         return;
@@ -470,9 +470,9 @@ MTFST_API void __stdcall FST_AccountInfo(int id, char *name, int number, char *c
     if (!server->IsActive())
         return;
 
-    string rc = Format("OK %s %d %s %s %s %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %d",
+    string rc = Format("OK %s %d %s %s %s %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %d %d",
                         Fixstr(name), number, Fixstr(company), Fixstr(dserver), Fixstr(currency), leverage, balance, equity, profit,
-                        credit, margin, freemarginmode, freemargin, stopoutmode, stopout);
+                        credit, margin, freemarginmode, freemargin, stopoutmode, stopout, isdemo);
     server->PostResponse(rc);
 }
 
