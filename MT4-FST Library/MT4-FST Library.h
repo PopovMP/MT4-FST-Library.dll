@@ -18,7 +18,7 @@
 #define MTFST_API __declspec(dllimport)
 #endif
 
-#define LIBRARY_VERSION      "1.3"
+#define LIBRARY_VERSION      "1.4"
 
 #define FST_REQ_ERROR           -1
 #define FST_REQ_NONE             0

@@ -48,13 +48,13 @@ string Client::Command(int id, string command)
 bool Client::Tick(int id, const char *symbol, int period, int time, double bid, double ask, int spread, double tickvalue,
                   int bartime, double open, double high, double low, double close, int volume, int bartime10,
                   double accountBalance, double accountEquity, double accountProfit, double accountFreeMargin,
-                  int positionTicket, int positionType, double positionLots, double positionOpenPrice,
+                  int positionTicket, int positionType, double positionLots, double positionOpenPrice, int positionOpenTime,
                   double positionStopLoss, double positionTakeProfit, double positionProfit, char *positionComment)
 {
-    string cmd = Format("TI %s %d %d %.5f %.5f %d %.5f %d %.5f %.5f %.5f %.5f %d %d %.2f %.2f %.2f %.2f %d %d %.2f %.5f %.5f %.5f %.2f %s",
+    string cmd = Format("TI %s %d %d %.5f %.5f %d %.5f %d %.5f %.5f %.5f %.5f %d %d %.2f %.2f %.2f %.2f %d %d %.2f %.5f %d %.5f %.5f %.2f %s",
                         symbol, period, time, bid, ask, spread, tickvalue, bartime, open, high, low, close, volume, bartime10,
                         accountBalance, accountEquity, accountProfit, accountFreeMargin, positionTicket, positionType,
-                        positionLots, positionOpenPrice, positionStopLoss, positionTakeProfit, positionProfit, Fixstr(positionComment));    
+                        positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, Fixstr(positionComment));    
     
     string rc  = Command(id, cmd);
 
