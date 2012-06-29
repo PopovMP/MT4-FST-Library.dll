@@ -20,5 +20,6 @@ public:
                      int bartime, double open, double high, double low, double close, int volume, int bartime10,
                      double accountBalance, double accountEquity, double accountProfit, double accountFreeMargin,
                      int positionTicket, int positionType, double positionLots, double positionOpenPrice, int positionOpenTime,
-                     double positionStopLoss, double positionTakeProfit, double positionProfit, char *positionComment);
+                     double positionStopLoss, double positionTakeProfit, double positionProfit, char *positionComment,
+					 char *parameters);
 };

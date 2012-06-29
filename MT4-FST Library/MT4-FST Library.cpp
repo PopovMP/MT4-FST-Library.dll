@@ -52,7 +52,7 @@ MTFST_API void __stdcall FST_CloseConnection(int id)
 MTFST_API int __stdcall FST_Tick(int id, const char *symbol, int period, int ticktime, double bid, double ask, int spread, double tickvalue, const RateInfo *rates, int bars,
                                  double accountBalance, double accountEquity, double accountProfit, double accountFreeMargin, int positionTicket,
                                  int positionType, double positionLots, double positionOpenPrice, int positionOpenTime, double positionStopLoss, double positionTakeProfit,
-                                 double positionProfit, char *positionComment)
+                                 double positionProfit, char *positionComment, char *parameters)
 {
     if (symbol == NULL || rates == NULL || bars <= 0)
     {
@@ -71,7 +71,8 @@ MTFST_API int __stdcall FST_Tick(int id, const char *symbol, int period, int tic
 
     bool bResponce = Client::Tick(id, symbol, period, ticktime, bid, ask, spread, tickvalue, bartime, open, high, low, close, volume, bartime10,
                                   accountBalance, accountEquity, accountProfit, accountFreeMargin, positionTicket, positionType,
-                                  positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, positionComment);
+                                  positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, positionComment,
+								  parameters);
 
     return bResponce ? 1 : 0;
 }
@@ -385,7 +386,7 @@ MTFST_API void __stdcall FST_Response(int id, int ok, int code)
 MTFST_API void __stdcall FST_Ping(int id, const char *symbol, int period, int time, double bid, double ask, int spread, double tickvalue, const RateInfo *rates, int bars,
                                   double accountBalance, double accountEquity, double accountProfit, double accountFreeMargin, int positionTicket,
                                   int positionType, double positionLots, double positionOpenPrice, int positionOpenTime, double positionStopLoss, double positionTakeProfit,
-                                  double positionProfit, char *positionComment)
+                                  double positionProfit, char *positionComment, char *parameters)
 {
     if (servers.find(id) == servers.end())
         return;
@@ -403,10 +404,11 @@ MTFST_API void __stdcall FST_Ping(int id, const char *symbol, int period, int ti
 
     int bartime10  = rates[bars - 11].time;
 
-    string rc = Format("OK %s %d %d %.5f %.5f %d %.5f %d %.5f %.5f %.5f %.5f %d %d %.2f %.2f %.2f %.2f %d %d %.2f %.5f %d %.5f %.5f %.2f %s",
+    string rc = Format("OK %s %d %d %.5f %.5f %d %.5f %d %.5f %.5f %.5f %.5f %d %d %.2f %.2f %.2f %.2f %d %d %.2f %.5f %d %.5f %.5f %.2f %s %s",
                         symbol, period, time, bid, ask, spread, tickvalue, bartime, open, high, low, close, volume,
                         bartime10, accountBalance, accountEquity, accountProfit, accountFreeMargin, positionTicket, positionType,
-                        positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, Fixstr(positionComment));    
+                        positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, Fixstr(positionComment),
+						parameters);
     server->PostResponse(rc);
 }
 
