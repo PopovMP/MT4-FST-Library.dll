@@ -2,6 +2,5 @@
 *.ncb
 MT4-FST\ Library/Release/
 MT4-FST\ Library/Debug/
-MT4-FST\ Library/*.vcproj
 MT4-FST\ Library/*.user
 
