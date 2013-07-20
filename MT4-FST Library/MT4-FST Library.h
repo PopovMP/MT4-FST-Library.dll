@@ -1,10 +1,12 @@
-// Project:    MT4-FST Library.dll
-// Solution:   Forex Strategy Trader
-// Copyright:  (c) 2011 Miroslav Popov - All rights reserved!
-// This code or any part of it cannot be used in other applications without a permission.
-// Website:    http://forexsb.com
-// Support:    http://forexsb.com/forum
-// Contacts:   info@forexsb.com
+//==============================================================
+// Forex Strategy Builder
+// Copyright (c) Miroslav Popov. All rights reserved.
+//==============================================================
+// THIS CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+// EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE.
+//==============================================================
 
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the MTFST_EXPORTS
@@ -18,7 +20,7 @@
 #define MTFST_API __declspec(dllimport)
 #endif
 
-#define LIBRARY_VERSION      "1.5"
+#define LIBRARY_VERSION      "3.0"
 
 #define FST_REQ_ERROR           -1
 #define FST_REQ_NONE             0
@@ -35,6 +37,7 @@
 #define FST_REQ_PING            11
 #define FST_REQ_MARKET_INFO_ALL 12
 #define FST_REQ_TERMINAL_INFO   13
+#define FST_REQ_SET_LTF_META    14
 
 #pragma pack(push, 1)
 struct RateInfo

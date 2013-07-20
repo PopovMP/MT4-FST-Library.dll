@@ -1,10 +1,12 @@
-// Project:    MT4-FST Library.dll
-// Solution:   Forex Strategy Trader
-// Copyright:  (c) 2011 Miroslav Popov - All rights reserved!
-// This code or any part of it cannot be used in other applications without a permission.
-// Website:    http://forexsb.com
-// Support:    http://forexsb.com/forum
-// Contacts:   info@forexsb.com
+//==============================================================
+// Forex Strategy Builder
+// Copyright (c) Miroslav Popov. All rights reserved.
+//==============================================================
+// THIS CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+// EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE.
+//==============================================================
 
 #include "stdafx.h"
 #include "MT4-FST Library.h"
@@ -354,6 +356,20 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
         return FST_REQ_ORDER_DELETE;
     }
 
+    // Set LTF meta
+    else if (cmd == "LT")
+    {
+        if (args.size() != 1)
+        {
+            server->PostResponse("ER Invalid number of arguments");
+            return FST_REQ_NONE;
+        }
+
+        strcpy(parameters->string, args[0].c_str()); // LTF Meta
+
+		return FST_REQ_SET_LTF_META;
+    }
+
     server->PostResponse("ER Invalid command");
 
     return FST_REQ_NONE;
@@ -538,6 +554,9 @@ MTFST_API void __stdcall FST_Orders(int id, char *symbol, int *tickets, int coun
     if (servers.find(id) == servers.end())
         return;
     Server *server = servers[id];
+
+    if (!server->IsActive())
+        return;
 
     string rc = strlen(symbol) ? Format("OK %s %d", symbol, count) : Format("OK %d", count);
 

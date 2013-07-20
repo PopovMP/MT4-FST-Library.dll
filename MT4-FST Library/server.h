@@ -1,10 +1,12 @@
-// Project:    MT4-FST Library.dll
-// Solution:   Forex Strategy Trader
-// Copyright:  (c) 2011 Miroslav Popov - All rights reserved!
-// This code or any part of it cannot be used in other applications without a permission.
-// Website:    http://forexsb.com
-// Support:    http://forexsb.com/forum
-// Contacts:   info@forexsb.com
+//==============================================================
+// Forex Strategy Builder
+// Copyright (c) Miroslav Popov. All rights reserved.
+//==============================================================
+// THIS CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+// EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE.
+//==============================================================
 
 #pragma once
 
@@ -20,11 +22,15 @@ class Server
     ServerPipe _pipe;
     HANDLE     _thread;
     bool       _active;
-    int        _id, _offset, _count;
+    int        _id;
+	int        _offset;
+	int        _count;
 
     CRITICAL_SECTION _lock;
-    std::string _request, _response;
-    volatile bool _hasRequest, _hasResponse;
+    std::string _request;
+	std::string _response;
+    volatile bool _hasRequest;
+	volatile bool _hasResponse;
 
     static DWORD WINAPI Run(LPVOID lpParameter);
     void WaitForResponse();
