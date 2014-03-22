@@ -16,6 +16,23 @@
 
 using namespace std;
 
+char *ConvertStr(const char *str)
+{   int len = wcslen((const wchar_t*)str) + 1;
+    char *out = new char[len];
+    size_t convertedChars = 0;
+    wcstombs_s(&convertedChars, out, len, (const wchar_t*)str, _TRUNCATE);
+	return out;
+}
+
+char *StrToMultiByte(const char *str)
+{ size_t newsize = strlen(str) + 1;
+  wchar_t * wcstring = new wchar_t[newsize];
+  // Convert char* string to a wchar_t* string.
+  size_t convertedChars = 0;
+  mbstowcs_s(&convertedChars, wcstring, newsize, str, _TRUNCATE);
+  return (char *)wcstring;
+}
+
 map<int, Server*> servers;
 
 ///
@@ -23,7 +40,7 @@ map<int, Server*> servers;
 ///
 MTFST_API char *__stdcall FST_LibraryVersion()
 {
-    return LIBRARY_VERSION;
+    return StrToMultiByte(LIBRARY_VERSION);
 }
 
 ///
@@ -47,7 +64,6 @@ MTFST_API void __stdcall FST_CloseConnection(int id)
     }
 }
 
-///
 /// Sends tick information.
 /// Returns: Error -1; Tick received 1; No response 0. 
 ///
@@ -62,19 +78,19 @@ MTFST_API int __stdcall FST_Tick(int id, const char *symbol, int period, int tic
         return -1;
     }
 
-    int    bartime = rates[bars - 1].time;
+    int    bartime = (int)rates[bars - 1].time;
     double open    = rates[bars - 1].open;
     double high    = rates[bars - 1].high;
     double low     = rates[bars - 1].low;
     double close   = rates[bars - 1].close;
     int    volume  = (int)rates[bars - 1].volume;
 
-    int bartime10 = rates[bars - 11].time;
-
-    bool bResponce = Client::Tick(id, symbol, period, ticktime, bid, ask, spread, tickvalue, bartime, open, high, low, close, volume, bartime10,
+    int bartime10  = (int)rates[bars - 11].time;
+	
+    bool bResponce = Client::Tick(id, ConvertStr(symbol), period, ticktime, bid, ask, spread, tickvalue, bartime, open, high, low, close, volume, bartime10,
                                   accountBalance, accountEquity, accountProfit, accountFreeMargin, positionTicket, positionType,
-                                  positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, positionComment,
-								  parameters);
+                                  positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, ConvertStr(positionComment),
+								  ConvertStr(parameters));
 
     return bResponce ? 1 : 0;
 }
@@ -82,7 +98,7 @@ MTFST_API int __stdcall FST_Tick(int id, const char *symbol, int period, int tic
 ///
 /// Checks FST request if any.
 ///
-MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int icount, double *dargs, int dcount, MqlString *parameters)
+MTFST_API int __stdcall FST_Request(int id, wchar_t *symbol, int *iargs, int icount, double *dargs, int dcount, wchar_t *parameters)
 {
     if (servers.find(id) == servers.end())
         return FST_REQ_ERROR;
@@ -93,8 +109,10 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
 
     if (!server->HasRequest())
         return FST_REQ_NONE;
+	
+	size_t symbolsize = wcslen(symbol) + 1;
 
-    if (symbol == NULL || symbol->string == NULL || iargs == NULL || dargs == NULL) 
+    if (symbol == NULL || symbolsize == NULL || iargs == NULL || dargs == NULL) 
     {
         LogMsg("FST_Request invalid arguments!");
         return FST_REQ_ERROR;
@@ -138,13 +156,13 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
             return FST_REQ_NONE;
         }
 
-        if ((unsigned)symbol->length < args[0].length())
+        if ((unsigned)symbolsize < args[0].length())
         {
             server->PostResponse("ER EA no space for symbol name");
             return FST_REQ_NONE;
         }
 
-        strcpy(symbol->string, args[0].c_str());
+        wcscpy(symbol, (const wchar_t *)StrToMultiByte(args[0].c_str()));
 
         return FST_REQ_SYMBOL_INFO;
     } 
@@ -158,13 +176,13 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
             return FST_REQ_NONE;
         }
 
-        if ((unsigned)symbol->length < args[0].length())
+        if ((unsigned)symbolsize < args[0].length())
         {
             server->PostResponse("ER EA no space for symbol name");
             return FST_REQ_NONE;
         }
 
-        strcpy(symbol->string, args[0].c_str());
+        wcscpy(symbol, (const wchar_t *)StrToMultiByte(args[0].c_str()));
         iargs[0] = atoi(args[1].c_str());
 
         return FST_REQ_MARKET_INFO;
@@ -179,13 +197,13 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
             return FST_REQ_NONE;
         }
 
-        if ((unsigned)symbol->length < args[0].length())
+        if ((unsigned)symbolsize < args[0].length())
         {
             server->PostResponse("ER EA no space for symbol name");
             return FST_REQ_NONE;
         }
 
-        strcpy(symbol->string, args[0].c_str());
+        wcscpy(symbol, (const wchar_t *)StrToMultiByte(args[0].c_str()));
 
         return FST_REQ_MARKET_INFO_ALL;
     } 
@@ -223,13 +241,13 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
             return FST_REQ_NONE;
         }
 
-        if ((unsigned)symbol->length < args[0].length())
+        if ((unsigned)symbolsize < args[0].length())
         {
             server->PostResponse("ER EA no space for symbol name");
             return FST_REQ_NONE;
         }
 
-        strcpy(symbol->string, args[0].c_str());
+        wcscpy(symbol, (const wchar_t *)StrToMultiByte(args[0].c_str()));
         server->Offset(atoi(args[2].c_str()));
         server->Count(atoi(args[3].c_str()));
 
@@ -248,16 +266,16 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
             return FST_REQ_NONE;
         }
 
-        *(symbol->string) = 0;
+        *(symbol) = 0;
         if (args.size() == 1)
         {
-            if ((unsigned)symbol->length < args[0].length())
+            if ((unsigned)symbolsize < args[0].length())
             {
                 server->PostResponse("ER EA no space for symbol name");
                 return FST_REQ_NONE;
             }
 
-            strcpy(symbol->string, args[0].c_str());
+            wcscpy(symbol, (const wchar_t *)StrToMultiByte(args[0].c_str()));
         }
 
         return FST_REQ_ORDERS;
@@ -286,13 +304,14 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
             return FST_REQ_NONE;
         }
 
-        if ((unsigned)symbol->length < args[0].length())
+        if ((unsigned)symbolsize < args[0].length())
         {
             server->PostResponse("ER EA no space for symbol name");
             return FST_REQ_NONE;
         }
 
-        strcpy(symbol->string, args[0].c_str());
+        //strcpy(symbol->string, StrToMultiByte(args[0].c_str()));
+		wcscpy(symbol, (const wchar_t *)StrToMultiByte(args[0].c_str()));
         iargs[0] = atoi(args[1].c_str()); //type
         dargs[0] = atof(args[2].c_str()); //lots
         dargs[1] = atof(args[3].c_str()); //price
@@ -301,7 +320,7 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
         dargs[3] = atof(args[6].c_str()); //take profit
         iargs[2] = atoi(args[7].c_str()); //magic
         iargs[3] = atoi(args[8].c_str()); //expire
-        strcpy(parameters->string, args[9].c_str()); // Order parameters
+        wcscpy(parameters, (const wchar_t *)StrToMultiByte(args[9].c_str())); // Order parameters
 
         return FST_REQ_ORDER_SEND;
     }
@@ -320,7 +339,7 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
         dargs[1] = atof(args[2].c_str()); //stop loss
         dargs[2] = atof(args[3].c_str()); //take profit
         iargs[1] = atoi(args[4].c_str()); //expire
-        strcpy(parameters->string, args[5].c_str()); // Order parameters
+        wcscpy(parameters, (const wchar_t *)StrToMultiByte(args[5].c_str())); // Order parameters
 
         return FST_REQ_ORDER_MODIFY;
     }
@@ -365,7 +384,7 @@ MTFST_API int __stdcall FST_Request(int id, MqlString *symbol, int *iargs, int i
             return FST_REQ_NONE;
         }
 
-        strcpy(parameters->string, args[0].c_str()); // LTF Meta
+        wcscpy(parameters, (const wchar_t *)StrToMultiByte(args[0].c_str()));
 
 		return FST_REQ_SET_LTF_META;
     }
@@ -411,20 +430,20 @@ MTFST_API void __stdcall FST_Ping(int id, const char *symbol, int period, int ti
     if (!server->IsActive())
         return;
 
-    int    bartime = rates[bars - 1].time;
+    int    bartime = (int)rates[bars - 1].time;
     double open    = rates[bars - 1].open;
     double high    = rates[bars - 1].high;
     double low     = rates[bars - 1].low;
     double close   = rates[bars - 1].close;
     int    volume  = (int)rates[bars - 1].volume;
 
-    int bartime10  = rates[bars - 11].time;
+    int bartime10  = (int)rates[bars - 11].time;
 
     string rc = Format("OK %s %d %d %.5f %.5f %d %.5f %d %.5f %.5f %.5f %.5f %d %d %.2f %.2f %.2f %.2f %d %d %.2f %.5f %d %.5f %.5f %.2f %s %s",
-                        symbol, period, time, bid, ask, spread, tickvalue, bartime, open, high, low, close, volume,
+                        ConvertStr(symbol), period, time, bid, ask, spread, tickvalue, bartime, open, high, low, close, volume,
                         bartime10, accountBalance, accountEquity, accountProfit, accountFreeMargin, positionTicket, positionType,
-                        positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, Fixstr(positionComment),
-						parameters);
+                        positionLots, positionOpenPrice, positionOpenTime, positionStopLoss, positionTakeProfit, positionProfit, Fixstr(ConvertStr(positionComment)),
+						ConvertStr(parameters));
     server->PostResponse(rc);
 }
 
@@ -438,7 +457,7 @@ MTFST_API void __stdcall FST_SymbolInfo(int id, char *symbol, double bid, double
     if (!server->IsActive())
         return;
 
-    string rc = Format("OK %s %.5f %.5f %d %.5f %.5f %.5f", symbol, bid, ask, digits, point, spread, stoplevel);
+    string rc = Format("OK %s %.5f %.5f %d %.5f %.5f %.5f", ConvertStr(symbol), bid, ask, digits, point, spread, stoplevel);
     server->PostResponse(rc);
 }
 
@@ -452,7 +471,7 @@ MTFST_API void __stdcall FST_MarketInfo(int id, char *symbol, int mode, double v
     if (!server->IsActive())
         return;
 
-    string rc = Format("OK %s %d %.5f", symbol, mode, value);
+    string rc = Format("OK %s %d %.5f", ConvertStr(symbol), mode, value);
     server->PostResponse(rc);
 }
 
@@ -489,7 +508,7 @@ MTFST_API void __stdcall FST_AccountInfo(int id, char *name, int number, char *c
         return;
 
     string rc = Format("OK %s %d %s %s %s %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %d %d",
-                        Fixstr(name), number, Fixstr(company), Fixstr(dserver), Fixstr(currency), leverage, balance, equity, profit,
+                        Fixstr(ConvertStr(name)), number, Fixstr(ConvertStr(company)), Fixstr(ConvertStr(dserver)), Fixstr(ConvertStr(currency)), leverage, balance, equity, profit,
                         credit, margin, freemarginmode, freemargin, stopoutmode, stopout, isdemo);
     server->PostResponse(rc);
 }
@@ -504,12 +523,12 @@ MTFST_API void __stdcall FST_TerminalInfo(int id, char *name, char *company, cha
     if (!server->IsActive())
         return;
 
-    string rc = Format("OK %s %s %s %s %s", Fixstr(name), Fixstr(company), Fixstr(path), Fixstr(expertversion), Fixstr(LIBRARY_VERSION));
+    string rc = Format("OK %s %s %s %s %s", Fixstr(ConvertStr(name)), Fixstr(ConvertStr(company)), Fixstr(ConvertStr(path)), Fixstr(ConvertStr(expertversion)), Fixstr(ConvertStr(LIBRARY_VERSION)));
     server->PostResponse(rc);
 }
 
 // Bars
-MTFST_API void __stdcall FST_Bars(int id, char *symbol, int period, const RateInfo *rates, int bars)
+MTFST_API void __stdcall FST_Bars(int id, char *symbol, int period, const RateInfo *rates, const int bars)
 {
     if (servers.find(id) == servers.end())
         return;
@@ -528,23 +547,22 @@ MTFST_API void __stdcall FST_Bars(int id, char *symbol, int period, const RateIn
         return;
     }
 
-    string rc, header = Format("OK %s %d %d %d %d", symbol, period, bars, server->Offset(), server->Count()); //requested count
+    string rc, header = Format("OK %s %d %d %d %d", ConvertStr(symbol), period, bars, server->Offset(), server->Count()); //requested count
     int len = header.length(), count = 0;
-
-    while (count <= server->Count() && server->Offset() + count < bars) {
+	
+    while (count <= server->Count() && server->Offset() + count < bars) 
+	{
         int i = bars - 1 - (server->Offset() + count);
 
-        string s = Format(" %d %f %f %f %f %d", rates[i].time, rates[i].open, rates[i].high, rates[i].low, rates[i].close, (int)rates[i].volume);
-
-        if (len + s.length() >= OUT_BUFFER_SIZE)
-            break;
+        string s = Format(" %d %f %f %f %f %d", (long)rates[i].time, rates[i].open, rates[i].high, rates[i].low, rates[i].close, (int)rates[i].volume);     
+		if (len + s.length() >= OUT_BUFFER_SIZE) break;
 
         rc  += s;
         len += s.length();
         count++;
     }
 
-    header = Format("OK %s %d %d %d %d", symbol, period, bars, server->Offset(), count); //real count
+    header = Format("OK %s %d %d %d %d", ConvertStr(symbol), period, bars, server->Offset(), count); //real count
     server->PostResponse(header + rc);
 }
 
@@ -558,7 +576,7 @@ MTFST_API void __stdcall FST_Orders(int id, char *symbol, int *tickets, int coun
     if (!server->IsActive())
         return;
 
-    string rc = strlen(symbol) ? Format("OK %s %d", symbol, count) : Format("OK %d", count);
+    string rc = strlen(symbol) ? Format("OK %s %d", ConvertStr(symbol), count) : Format("OK %d", count);
 
     for (int i = 0; i < count; i++)
         rc += Format(" %d", tickets[i]);
@@ -578,6 +596,6 @@ MTFST_API void __stdcall FST_OrderInfo(int id, int ticket, char *symbol, int typ
         return;
 
     string rc = Format("OK %d %s %d %f %f %f %f %d %d %f %f %d %d",
-                        ticket, symbol, type, lots, oprice, stoploss, takeprofit, otime, ctime, cprice, profit, magic, expire);
+                        ticket, ConvertStr(symbol), type, lots, oprice, stoploss, takeprofit, otime, ctime, cprice, profit, magic, expire);
     server->PostResponse(rc);
 }

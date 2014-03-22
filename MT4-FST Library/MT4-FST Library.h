@@ -20,7 +20,7 @@
 #define MTFST_API __declspec(dllimport)
 #endif
 
-#define LIBRARY_VERSION      "3.0"
+#define LIBRARY_VERSION      "6.0"
 
 #define FST_REQ_ERROR           -1
 #define FST_REQ_NONE             0
@@ -42,7 +42,7 @@
 #pragma pack(push, 1)
 struct RateInfo
 {
-    unsigned time;
+    double   time;
     double   open;
     double   low;
     double   high;
@@ -53,6 +53,6 @@ struct RateInfo
 
 struct MqlString
 {
-    int   length;
+    int   len;
     char *string;
 };
