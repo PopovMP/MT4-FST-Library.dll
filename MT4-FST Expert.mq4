@@ -1,6 +1,6 @@
 //+--------------------------------------------------------------------+
 //| File name:  MT4-FST Expert.mq4                                     |
-//| Version:    6.0 2014-03-23                                         |
+//| Version:    6.1 2014-10-15                                         |
 //| Copyright:  © 2014, Miroslav Popov - All rights reserved!          |
 //| Website:    http://forexsb.com/                                    |
 //| Support:    http://forexsb.com/forum/                              |
@@ -160,7 +160,7 @@ double   currentBarHigh = 0;
 double   currentBarLow  = 1000000;
 int      logLines       = 0;
 
-string ltfSymbols[]; 
+string ltfSymbols[];
 int    ltfPeriods[];
 int    ltfLength = 0;
 
@@ -431,10 +431,10 @@ int Server()
 
             TimeLastPing = TimeLocal();
         }
-        
+
         // Check for a request from Forex Strategy Trader.
         int request = FST_Request(Connection_ID, symbol, iargs, 5, dargs, 5, parameters);
-        
+
         if (request < 0)
         {
             Comment("MT4-FST Library Server Error: ", request);
@@ -846,11 +846,17 @@ int ReduceCurrentPosition(string symbol, double lots, double price, int slippage
 
     for (i = 0; i < orders; i++)
     {
-        OrderSelect(openPos[i][1], SELECT_BY_TICKET);
+        if (!OrderSelect(openPos[i][1], SELECT_BY_TICKET))
+        {
+            LastError = GetLastError();
+            Print("Error in OrderSelect: ", GetErrorDescription(LastError));
+            continue;
+        }
+
         double orderLots = IF_D(lots >= OrderLots(), OrderLots(), lots);
         ClosePositionByTicket(symbol, OrderTicket(), orderLots, slippage);
-
         lots -= orderLots;
+
         if (lots <= 0)
             break;
     }
@@ -906,7 +912,12 @@ int CloseCurrentPosition(string symbol, int slippage)
 
     for (i = 0; i < orders; i++)
     {
-        OrderSelect(openPos[i][1], SELECT_BY_TICKET);
+        if (!OrderSelect(openPos[i][1], SELECT_BY_TICKET))
+        {
+            LastError = GetLastError();
+            Print("Error in OrderSelect: ", GetErrorDescription(LastError));
+            continue;
+        }
         orderResponse = ClosePositionByTicket(symbol, OrderTicket(), OrderLots(), slippage);
     }
 
@@ -1036,7 +1047,7 @@ int ClosePositionByTicket(string symbol, int orderTicket, double orderLots, int 
 
         Print("Error with ClosePositionByTicket: ", GetErrorDescription(LastError), ". Attempt No: ", (attempt + 1));
         Sleep(TRADE_RETRY_WAIT);
-   }
+    }
 
     return (-1);
 }
@@ -1156,13 +1167,13 @@ bool OrderSelectByTicket(int orderTicket)
 
     if (!response)
     {
-         LastError = GetLastError();
-         string message = "### Error with OrderSelect(" + orderTicket + ")" +
-                          ", LastError=" + LastError +
-                          ", " + GetErrorDescription(LastError);
-         Print(message);
-         if (Write_Log_File)
-             WriteLogLine(message);
+        LastError = GetLastError();
+        string message = "### Error with OrderSelect(" + orderTicket + ")" +
+                         ", LastError=" + LastError +
+                         ", " + GetErrorDescription(LastError);
+        Print(message);
+        if (Write_Log_File)
+            WriteLogLine(message);
     }
 
     return (response);
@@ -1648,7 +1659,7 @@ void ParseOrderParameters(string parameters)
         BreakEven = StrToInteger(StringSubstr(param[1], 4));
 
      if (BreakEven > 0 && BreakEven < StopLevel)
-          BreakEven = StopLevel;
+         BreakEven = StopLevel;
 
     Print("Trailing Stop = ", TrailingStop, ", Mode - ", TrailingMode, ", Break Even = ", BreakEven);
 
@@ -1665,11 +1676,11 @@ string GenerateParameters()
         "aSL=" + ActivatedStopLoss   + ";" +
         "aTP=" + ActivatedTakeProfit + ";" +
         "al="  + ClosedSLTPLots;
-      
-    string G = GetLtfBarsString();
+
+    string ltfBarsString = GetLtfBarsString();
     if (ltfLength > 0)
         parametrs = parametrs + ";" +
-            "LTF=" + G;
+            "LTF=" + ltfBarsString;
 
     return (parametrs);
 }
@@ -1715,9 +1726,9 @@ void GetPing(string symbol)
     double ask     = MarketInfo(symbol, MODE_ASK);
     int    spread  = MathRound(MarketInfo(symbol, MODE_SPREAD));
     double tickval = MarketInfo(symbol, MODE_TICKVALUE);
-    
+
     string G = GenerateParameters();
-    
+
     FST_Ping(Connection_ID, symbol, Period(), TimeCurrent(), bid, ask, spread, tickval, rates, Bars,
         AccountBalance(), AccountEquity(), AccountProfit(), AccountFreeMargin(),
         PositionTicket, PositionType, PositionLots, PositionOpenPrice, PositionTime, PositionStopLoss, PositionTakeProfit, PositionProfit, PositionComment, G);
@@ -1876,7 +1887,7 @@ void SetLtfMetaData(string metaData)
     ltfLength = ArraySize(meta)/2;
     ArrayResize(ltfSymbols, ltfLength);
     ArrayResize(ltfPeriods, ltfLength);
-    
+
     int j = 0;
     for (int i = 0; i< ltfLength; i++)
     {
@@ -1890,11 +1901,11 @@ void SetLtfMetaData(string metaData)
 string GetLtfBarsString()
 {
     string bars;
-    for(int i = 0; i < ltfLength; i++)
+    for (int i = 0; i < ltfLength; i++)
     {
         string symbol = ltfSymbols[i];
         int    period = ltfPeriods[i];
-        
+
         bars = bars + symbol + "|" + period;
         for (int j = 1; j >= 0; j--)
         {
@@ -1909,11 +1920,11 @@ string GetLtfBarsString()
 
             bars = bars + "|" + time + "|" + open + "|" + high + "|" + low + "|" + close + "|" + volume;
         }
-        
+
         if (i < ltfLength - 1)
             bars = bars + "#";
     }
-    
+
     return (bars);
 }
 
